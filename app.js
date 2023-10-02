@@ -1,40 +1,46 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const express = require("express");
+const app = express();
 dotenv.config({ path: "./config.env" });
 
-const app = express();
-const DB = process.env.DATABASE;
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("conncetion is created successfully");
-  })
-  .catch(() => {
-    console.log("conncetion is not created successfully");
-  });
+require("./db/conncet");
+// const User = require('./model/userSchema');
 
-// middleware
+app.use(express.json());
+
+// we link the router files to make our route easy
+app.use(require("./router/auth"));
+
+const PORT = process.env.PORT;
+
+// Middelware
 const middleware = (req, res, next) => {
-  console.log("hello from middleware");
+  console.log(`Hello my Middleware`);
   next();
 };
-app.get("/", (req, res) => {
-  res.send("Hello from our Home Page");
-});
+
+// app.get('/', (req, res) => {
+//     res.send(`Hello world from the server app.js`);
+// });
+
 app.get("/about", middleware, (req, res) => {
-  console.log("hello after middleware");
-  res.send("Hello from our About Page");
+  console.log(`Hello my About`);
+  res.send(`Hello About world from the server`);
 });
+
 app.get("/contact", (req, res) => {
-  res.send("Hello from our Contact Page");
+  res.send(`Hello Contact world from the server`);
 });
-app.get("/signup", (req, res) => {
-  res.send("Hello from our Signup Page");
-});
+
 app.get("/signin", (req, res) => {
-  res.send("Hello from our Login Page");
+  res.send(`Hello Login world from the server`);
 });
-app.listen(3000, () => {
-  console.log("app is running on port 3000");
+
+app.get("/signup", (req, res) => {
+  res.send(`Hello Registration world from the server`);
+});
+
+app.listen(PORT, () => {
+  console.log(`server is runnig at port no ${PORT}`);
 });
